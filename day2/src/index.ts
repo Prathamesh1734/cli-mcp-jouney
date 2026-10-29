@@ -4,7 +4,7 @@ import { z } from "zod";
 
 // initialize mcp server
 const server = new McpServer({
-  name: "basic-calculator-server",
+  name: "updated-mcp-server",
   version: "1.0.0",
 });
 
@@ -28,6 +28,50 @@ server.registerTool(
         {
           type: "text",
           text: `the sum of ${a} and ${b} is ${res}`,
+        },
+      ],
+    };
+  },
+);
+
+server.registerTool(
+  "calculate_difference",
+  {
+    description: "subtract the second number from first number",
+    inputSchema: {
+      a: z.number().describe("starting number"),
+      b: z.number().describe("number to subtract"),
+    },
+  },
+  async ({ a, b }) => {
+    return {
+      content: [
+        {
+          type: "text",
+          text: `the difference is ${a - b}`,
+        },
+      ],
+    };
+  },
+);
+
+server.registerTool(
+  "format_text",
+  {
+    description: "convert a string to completely uppercase or lowercase",
+    inputSchema: {
+      text: z.string().describe("the text to modify"),
+      format: z.enum(["upper", "lower"]).describe("the case format to apply"),
+    },
+  },
+  async ({ text, format }) => {
+    const result = format === "upper" ? text.toUpperCase() : text.toLowerCase();
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `formatted text: ${result}`,
         },
       ],
     };
