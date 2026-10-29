@@ -78,6 +78,28 @@ server.registerTool(
   },
 );
 
+server.registerTool(
+  "calculate_multiplication",
+  {
+    description: "multiplies two numbers",
+    inputSchema: {
+      a: z.number().describe("the first number"),
+      b: z.number().describe("the second number"),
+    },
+  },
+  async ({ a, b }) => {
+    let result = a * b;
+    return {
+      content: [
+        {
+          type: "text",
+          text: `the multiplication of ${a} and ${b} is ${result}`,
+        },
+      ],
+    };
+  },
+);
+
 // start the server and connect the transport
 async function main() {
   const transport = new StdioServerTransport();
