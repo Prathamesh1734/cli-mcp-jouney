@@ -1,3 +1,5 @@
+import { readFile } from "fs/promises";
+import path from "path";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
@@ -16,21 +18,33 @@ server.registerResource(
   },
   async (uri) => {
     // in real app this might read json file or query database
-    const fakeConfigData = {
-      theme: "dark",
-      features: { newUI: true, betaTesting: false },
-      maxRetries: 3,
-    };
+    // const fakeConfigData = {
+    //   theme: "dark",
+    //   features: { newUI: true, betaTesting: false },
+    //   maxRetries: 3,
+    // };
 
-    return {
-      contents: [
-        {
-          uri: uri.href,
-          mimeType: "application/json",
-          text: JSON.stringify(fakeConfigData, null, 2),
-        },
-      ],
-    };
+    try {
+      // resolve the absolute path to config.json in the project root
+      const filePath = path.join(process.cwd(), "config.json");
+
+      // read file content asynchronously
+      const fileContent = await readFile(filePath, "utf-8");
+
+      return {
+        contents: [
+          {
+            uri: uri.href,
+            mimeType: "application/json", // change to text/markdown if reading a .md file
+            text: fileContent,
+          },
+        ],
+      };
+    } catch (error) {
+      throw new Error(
+        `failed to read file: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
   },
 );
 
@@ -76,6 +90,5 @@ main().catch((err) => {
   console.error("fatal error: " + err);
   process.exit(1);
 });
-
 
 // run npx @modelcontextprotocol/inspector tsx src/index.ts

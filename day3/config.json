@@ -1,0 +1,12 @@
+{
+  "name": "Alex Mercer",
+  "age": 28,
+  "isAccountActive": true,
+  "hobbies": ["photography", "cooking", "cycling"],
+  "address": {
+    "street": "123 Main Street",
+    "city": "Austin",
+    "state": "TX",
+    "zipCode": "78701"
+  }
+}
