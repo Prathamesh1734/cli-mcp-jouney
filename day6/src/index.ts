@@ -121,10 +121,8 @@ async function runMcpServer() {
 // to test cli without key
 // npx tsx src/index.ts
 
-// to test cli with key (bash)
-// GITHUB_TOKEN="ghp_fake_token_123" npx tsx src/index.ts
-// powershell
+// to test cli with key 
 // $env:GITHUB_TOKEN="ghp_fake_token_123"; npx tsx src/index.ts
 
 // test mcp inspector
-// GITHUB_TOKEN="ghp_fake_token_123" npx @modelcontextprotocol/inspector tsx src/index.ts --mcp
+// $env:GITHUB_TOKEN="ghp_fake_token_123"; npx @modelcontextprotocol/inspector tsx src/index.ts --mcp
