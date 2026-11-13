@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import { fetchGithubProfile } from "../api/github.js";
+import { fetchGithubProfile, searchGithubRepos } from "../api/github.js";
 import { runMcpServer } from "../mcp/server.js";
 
 export const program = new Command();
@@ -27,7 +27,28 @@ program
   });
 
 program
-  .command("cli")
+  .command("search <query>")
+  .description("search github for repositories matching the query")
+  .action(async (query) => {
+    console.log(`\n🔍 searching github for: ${query}...\n`);
+    try {
+      const repos = await searchGithubRepos(query);
+      if (repos.length == 0) {
+        console.log("no repositories found");
+      } else {
+        console.table(repos);
+      }
+    } catch (error) {
+      console.error(
+        "❌ failed: ",
+        error instanceof Error ? error.message : error,
+      );
+      process.exitCode = 1;
+    }
+  });
+
+program
+  .command("mcp")
   .description("start the mcp server for ai clients")
   .action(async () => {
     await runMcpServer();

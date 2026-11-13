@@ -1,7 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio";
 import { z } from "zod";
-import { fetchGithubProfile } from "../api/github.js";
+import { fetchGithubProfile, searchGithubRepos } from "../api/github.js";
 
 export async function runMcpServer() {
   const server = new McpServer({
@@ -23,6 +23,39 @@ export async function runMcpServer() {
             {
               type: "text",
               text: JSON.stringify(profile, null, 2),
+            },
+          ],
+        };
+      } catch (error) {
+        return {
+          isError: true,
+          content: [
+            {
+              type: "text",
+              text: String(error),
+            },
+          ],
+        };
+      }
+    },
+  );
+
+  server.registerTool(
+    "search_github_repos",
+    {
+      description: "search for public github repositories based on a query",
+      inputSchema: {
+        query: z.string().describe("the search query"),
+      },
+    },
+    async ({ query }) => {
+      try {
+        const repos = await searchGithubRepos(query);
+        return {
+          content: [
+            {
+              type: "text",
+              text: `search result for '${query}':\n\n${JSON.stringify(repos, null, 2)}`,
             },
           ],
         };
